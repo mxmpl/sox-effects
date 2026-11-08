@@ -1,0 +1,33 @@
+[project]
+name = "sox-effects"
+version = "0.1.0"
+description = "Minimal libsox effects bindings for any array"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [{ name = "Maxime Poli" }]
+dependencies = []
+
+[dependency-groups]
+test = [
+  "jax>=0.12.0",
+  "numpy>=2.2.6",
+  "pytest>=9.2.0",
+  "torch>=2.10",
+]
+
+[build-system]
+requires = ["nanobind>=3.1.0", "scikit-build-core>=1.1.1"]
+build-backend = "scikit_build_core.build"
+
+[tool.scikit-build]
+minimum-version = "build-system.requires"
+build-dir = "build/{wheel_tag}"
+wheel.py-api = "cp312"
+
+[tool.uv]
+cache-keys = [
+  { file = "pyproject.toml" },
+  { file = "CMakeLists.txt" },
+  { file = "src/sox_effects/sox_effects.cpp" },
+]
