@@ -5,8 +5,23 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 authors = [{ name = "Maxime Poli" }]
+keywords = ["audio", "bindings", "sox"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Multimedia :: Sound/Audio",
+  "Topic :: Scientific/Engineering",
+]
 dependencies = []
 dynamic = ["version"]
+
+[project.urls]
+Issues = "https://github.com/mxmpl/sox-effects/issues"
+Repository = "https://github.com/mxmpl/sox-effects"
 
 [dependency-groups]
 test = [

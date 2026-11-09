@@ -23,7 +23,8 @@ It works with Python >= 3.12, on Linux and macOS.
 ## Quick start
 
 ```python
-import numpy as np, sox_effects
+import numpy as np
+import sox_effects
 
 wav = np.random.randn(2, 16000).astype(np.float32) * 0.1  # (channels, time), float32, CPU
 out, sr = sox_effects.apply_effects(
