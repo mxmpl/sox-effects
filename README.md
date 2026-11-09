@@ -82,7 +82,7 @@ found, install it as shown above, or point `LIBSOX_PATH` to the library file (e.
 The extension is built with [nanobind](https://github.com/wjakob/nanobind) and
 [scikit-build-core](https://github.com/scikit-build/scikit-build-core). Building from source only needs the
 `sox.h` header, which is looked up in `$SOX_ROOT/include`, next to the `sox` executable on your `PATH`, or in
-`/usr`, `/usr/local` and `/opt/homebrew`.
+`/usr`, `/usr/local` and `/opt/homebrew` (as `include/sox.h` or `include/sox/sox.h`).
 
 ```sh
 uv run --group test pytest    # or: pip install . --group test && pytest

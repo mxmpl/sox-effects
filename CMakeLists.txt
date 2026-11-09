@@ -5,7 +5,7 @@ find_package(Python 3.12 REQUIRED COMPONENTS Interpreter Development.Module ${SK
 find_package(nanobind CONFIG REQUIRED)
 
 if(NOT "$ENV{SOX_ROOT}" STREQUAL "")
-  find_path(SOX_INCLUDE_DIR sox.h PATHS "$ENV{SOX_ROOT}/include" NO_DEFAULT_PATH)
+  find_path(SOX_INCLUDE_DIR sox.h PATHS "$ENV{SOX_ROOT}/include" PATH_SUFFIXES sox NO_DEFAULT_PATH)
 else()
   find_program(SOX_EXECUTABLE sox)
   if(SOX_EXECUTABLE)
@@ -13,7 +13,12 @@ else()
     cmake_path(GET _sox PARENT_PATH _sox_bin)
     cmake_path(GET _sox_bin PARENT_PATH _sox_root)
   endif()
-  find_path(SOX_INCLUDE_DIR sox.h HINTS "${_sox_root}/include" PATHS /usr/include /usr/local/include /opt/homebrew/include)
+  find_path(
+    SOX_INCLUDE_DIR sox.h
+    HINTS "${_sox_root}/include"
+    PATHS /usr/include /usr/local/include /opt/homebrew/include
+    PATH_SUFFIXES sox # RHEL/Fedora sox-devel installs include/sox/sox.h
+  )
 endif()
 if(NOT SOX_INCLUDE_DIR)
   message(FATAL_ERROR "sox.h not found: install the libsox headers (libsox-dev, sox-devel, brew install sox) or set SOX_ROOT")

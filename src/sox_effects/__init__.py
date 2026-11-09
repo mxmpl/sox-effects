@@ -32,9 +32,7 @@ def apply_effects[A](
     Returns the processed array (same library and layout) and its sample rate.
     """
     if getattr(array, "requires_grad", False):  # otherwise torch's DLPack export fails with an obscure error
-        raise ValueError(
-            "SoX effects aren't differentiable: call .detach() first to apply them without gradients"
-        )
+        raise ValueError("SoX effects aren't differentiable: call .detach() first to apply them without gradients")
     out, sr = _C.apply_effects(array, sample_rate, effects, channels_first)
     return _same_library(array, out), sr
 

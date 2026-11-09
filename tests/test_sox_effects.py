@@ -1,4 +1,6 @@
+import functools
 import gc
+import operator
 import random
 import shutil
 import subprocess
@@ -137,7 +139,9 @@ def test_effect_chain(lib: Lib, x: np.ndarray) -> None:
     assert len(draws) > 1  # callables re-evaluated
     y, sr = chain.apply(lib.asarray(x), SR)
     assert isinstance(y, lib.array_type)
-    assert (tuple(y.shape), sr) == (x.shape, SR)
+    assert sr == SR
+    assert y.shape[0] == x.shape[0]
+    assert abs(y.shape[1] - x.shape[1]) <= 1  # SoX's pitch effect can round the length by one sample
     last, _ = base.apply(lib.asarray(x).T, SR, channels_first=False)
     assert_allclose(np.asarray(last), 0.5 * x.T, atol=1e-7, rtol=0)
 
@@ -212,7 +216,7 @@ class _Augmented(Dataset):
     def __len__(self) -> int:
         return 8
 
-    def __getitem__(self, i: int) -> torch.Tensor:
+    def __getitem__(self, i: int) -> torch.Tensor:  # ty: ignore[invalid-method-override]
         return se.apply_effects(torch.randn(1, SR) * 0.1, SR, HEAVY)[0]
 
 
@@ -268,7 +272,22 @@ def test_channels_first_is_keyword_only(x: np.ndarray) -> None:
 @pytest.mark.skipif(shutil.which("sox") is None, reason="sox CLI not installed")
 def test_matches_sox_cli(x: np.ndarray) -> None:
     mono = x[:1]
-    cmd = ["sox", "-q", "-D", "-t", "f32", "-r", str(SR), "-c", "1", "-", "-t", "f32", "-", *sum(HEAVY, [])]
+    cmd = [
+        "sox",
+        "-q",
+        "-D",
+        "-t",
+        "f32",
+        "-r",
+        str(SR),
+        "-c",
+        "1",
+        "-",
+        "-t",
+        "f32",
+        "-",
+        *functools.reduce(operator.iadd, HEAVY, []),
+    ]
     raw = subprocess.run(cmd, input=mono.tobytes(), capture_output=True, check=True).stdout
     y, _ = se.apply_effects(mono, SR, HEAVY)
     assert_array_equal(y, np.frombuffer(raw, dtype=np.float32)[None])

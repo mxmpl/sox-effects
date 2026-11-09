@@ -67,7 +67,12 @@ void on_message(unsigned level, const char*, const char* fmt, va_list ap) {
 }
 
 Api load() {
-  std::vector<std::string> candidates = {"libsox.so.3", "libsox.so", "libsox.3.dylib", "libsox.dylib"};
+  std::vector<std::string> candidates = {
+      "libsox.so.3", "libsox.so", "libsox.3.dylib", "libsox.dylib",
+#ifdef __APPLE__
+      "/opt/homebrew/lib/libsox.3.dylib", "/opt/homebrew/lib/libsox.dylib",
+#endif
+  };
   if (const char* path = std::getenv("LIBSOX_PATH")) candidates = {path};
   void* handle = nullptr;
   std::string errors;
